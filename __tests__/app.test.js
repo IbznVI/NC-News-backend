@@ -70,12 +70,11 @@ describe("GET /api/articles/article_id:", ()=> {
                 article_img_url: 'https://images.pexels.com/photos/158651/news-newsletter-newspaper-information-158651.jpeg?w=700&h=700'
               }
             const { body: { article }} = response;
-            console.log(article)
             expect(typeof (article)).toBe("object")
             expect(article).toEqual(expectedContents)
         });
      })
-     test("404: returns the correct error message when invalid id is input", ()=> {
+     test("404: returns the correct error message when a non existing id is input", ()=> {
         return request(app)
         .get("/api/articles/100")
         .expect(404)
@@ -83,4 +82,56 @@ describe("GET /api/articles/article_id:", ()=> {
             expect(msg).toBe("Not found")
         })
      });
+     test("400: returns the correct error message when invalid id is input", ()=> {
+        return request(app)
+        .get("/api/articles/not-a-number")
+        .expect(400)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Bad Request")
+        })
+     });
+});
+
+
+describe("GET /api/articles", ()=> {
+    test("200: responds with an array of article objects with the correct properties including the comments", () => {
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response) => {
+            const { body: { articles }} = response;
+            expect(Array.isArray(articles)).toBe(true)
+            expect(articles).toHaveLength(13);
+            articles.forEach((article)=>{
+                expect(article).toHaveProperty("author", expect.any(String))
+                expect(article).toHaveProperty("title", expect.any(String))
+                expect(article).toHaveProperty("article_id", expect.any(Number))
+                expect(article).toHaveProperty("topic", expect.any(String))
+                expect(article).toHaveProperty("created_at", expect.any(String))
+                expect(article).toHaveProperty("votes", expect.any(Number))
+                expect(article).toHaveProperty("article_img_url", expect.any(String))
+                expect(article).toHaveProperty("comment_count", expect.any(String))
+            });
+        });
+    })
+    test("200: responds with the articles decending by date order", ()=>{
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response)=>{
+            const { body: { articles }} = response;
+            expect(articles).toBeSortedBy("created_at", { descending: true })
+        });
+    });
+    test("200: responds with the articles without a body property present", ()=>{
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response)=>{
+            const { body: { articles }} = response;
+            articles.forEach((article)=>{
+                expect(article).not.toHaveProperty("body")
+            })
+        });
+    })
 });
