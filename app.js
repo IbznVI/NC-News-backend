@@ -1,15 +1,18 @@
 const express = require("express");
 const { getTopics } = require("./controllers/topics-controllers");
 const { getEndpoints } = require("./controllers/endpoint-controllers")
+const { getArticleFromId } = require("./controllers/articles-controllers")
 const app = express();
-const { apiErrorHandler, serverErrorHandler } = require("./error-handlers")
+const { endpointErrorHandler, serverErrorHandler } = require("./error-handlers")
 
-app.use(express.json());
 
 app.get("/api/topics", getTopics);
 app.get("/api", getEndpoints);
+app.get("/api/articles/:article_id", getArticleFromId);
 
-app.use(apiErrorHandler);
+app.all("*", endpointErrorHandler);
+
+
 app.use(serverErrorHandler);
 
 

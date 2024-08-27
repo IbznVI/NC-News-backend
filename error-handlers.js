@@ -1,8 +1,9 @@
-exports.apiErrorHandler = (req,res) => {
-    res.status(404).send({ msg: "Not found: API not found"});
+exports.endpointErrorHandler = (req, res) => {
+    res.status(404).send({ msg: "Not found" });
 };
 
-exports.serverErrorHandler = (err, res, req, next) => {
-    console.log(err);
-    response(status(500).send({ msg: "Internal Server Error "}));
+exports.serverErrorHandler = (err, req, res, next) => {
+    console.error(err, "error details")
+    const { status = 500, msg = "Internal Server Error" } = err
+    res.status(status).send({ msg })
 };
