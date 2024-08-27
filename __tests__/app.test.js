@@ -36,3 +36,16 @@ describe("GET /api/topics", ()=> {
         })
     })
 });
+
+
+describe("GET /api endpoints", ()=> {
+    test("200: responds with the correct endpoints", () => {
+        return request(app)
+        .get("/api")
+        .expect(200)
+        .then(({ body: { endpoints }}) => {
+            expect(endpoints).toHaveProperty("GET /api");
+            expect(endpoints).toHaveProperty("GET /api/topics");
+            });
+        });
+    });
