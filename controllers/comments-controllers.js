@@ -1,4 +1,4 @@
-const { commentsFromArticle } = require("../models/comments-models")
+const { commentsFromArticle, postingComment} = require("../models/comments-models")
 const { articleFromId } = require("../models/articles-models")
 
 exports.getArticleComments = (req, res, next) => {
@@ -14,3 +14,14 @@ exports.getArticleComments = (req, res, next) => {
     })
 }
 
+exports.postCommentOnArticle = (req,res,next)=>{
+    const { username, body } = req.body;
+    const { article_id } = req.params;
+    postingComment(username, body, article_id)
+    .then((comment)=>{
+        res.status(201).send({comment})
+    })
+    .catch((err)=>{
+        next(err)
+    })
+}

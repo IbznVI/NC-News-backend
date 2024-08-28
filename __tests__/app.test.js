@@ -181,3 +181,38 @@ describe("GET /api/articles/:article_id/comments", ()=> {
         })
      });
 });
+
+describe("POST /api/articles/:article_id/comments", ()=> {
+    test("201: posts a comment for the article id that was input", () => {
+        const testComment = {
+            username: "icellusedkars",
+            body: "Great Website"
+        };
+        return request(app)
+        .post("/api/articles/9/comments")
+        .send(testComment)
+        .expect(201)
+        .then((response) => {
+            const { body: { comment }} = response
+            expect(comment).toEqual(
+                expect.objectContaining({
+                    body: "Great Website",
+                    votes: 0,
+                    author: "icellusedkars",
+                    article_id: 9,
+                    created_at: expect.any(String),
+                    comment_id: expect.any(Number),
+                })
+            )
+        });
+    });
+     test("400: returns the correct error message when invalid id is input", ()=> {
+        return request(app)
+        .post("/api/articles/not-a-number/comments")
+        .send(({ username: "icellusedkars", body: "Great Website"}))
+        .expect(400)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Bad Request")
+        })
+     });
+});
