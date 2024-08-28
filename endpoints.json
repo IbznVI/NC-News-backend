@@ -8,6 +8,9 @@
     "exampleResponse": {
       "topics": [{ "slug": "football", "description": "Footie!" }]
     }
+  }, 
+  "DELETE /api/comments/:comment_id": {
+    "description": "deletes a comment by its requested comment id"
   },
   "GET /api/articles/:article_id": {
     "description": "serves the article requested by the article id input by the user",
