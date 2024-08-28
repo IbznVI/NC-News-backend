@@ -15,3 +15,11 @@ exports.allArticles = ()=>{
         return rows;
     })
 }
+
+exports.patchArticleVote = (body, id) =>{
+    const patchVote = Object.values(body)[0]
+    return db.query("UPDATE articles SET votes = votes + $1 WHERE article_id = $2 RETURNING *", [patchVote, id])
+    .then(({rows})=>{
+        return rows[0]
+    })
+}

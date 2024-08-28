@@ -216,3 +216,49 @@ describe("POST /api/articles/:article_id/comments", ()=> {
         })
      });
 });
+
+
+describe("PATCH /api/articles/:article_id", ()=> {
+    test("200: patches the vote on the article requested", () => {
+        return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: 10})
+        .expect(200)
+        .then((response) => {
+            const { body: { article }} = response
+            expect(article).toEqual(
+                expect.objectContaining({
+                    article_id: 1,
+                    votes: 110
+                })
+            )
+        });
+    });
+     test("400: returns the correct error message when invalid id is input", ()=> {
+        return request(app)
+        .patch("/api/articles/not-a-number")
+        .send({ inc_votes: 10})
+        .expect(400)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Bad Request")
+        })
+     });
+     test("400: returns the correct error message when invalid id is input", ()=> {
+        return request(app)
+        .patch("/api/articles/1")
+        .send({ inc_votes: "Not-a-number"})
+        .expect(400)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Bad Request")
+        })
+     });
+     test("404: returns the correct error message when a non existing id is input", ()=> {
+        return request(app)
+        .patch("/api/articles/100")
+        .send({ inc_votes: "Not-a-number"})
+        .expect(400)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Bad Request")
+        })
+     });
+});

@@ -4,7 +4,7 @@ app.use(express.json());
 
 const { getTopics } = require("./controllers/topics-controllers");
 const { getEndpoints } = require("./controllers/endpoint-controllers")
-const { getArticleFromId, getArticles} = require("./controllers/articles-controllers")
+const { getArticleFromId, getArticles, patchVoteArticle} = require("./controllers/articles-controllers")
 const { endpointErrorHandler, serverErrorHandler, psqlErrorHandler } = require("./error-handlers")
 const { getArticleComments, postCommentOnArticle } = require("./controllers/comments-controllers")
 
@@ -15,6 +15,8 @@ app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getArticleComments);
 
 app.post("/api/articles/:article_id/comments", postCommentOnArticle);
+
+app.patch("/api/articles/:article_id", patchVoteArticle);
 
 app.all("*", endpointErrorHandler);
 
