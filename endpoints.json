@@ -38,6 +38,19 @@
 
     }]
   },
+  "POST /api/articles/:article_id/comments": {
+    "description": "posts a comment to the given article id",
+    "exampleResponse": {
+      "comment": {
+      "body": "Great Website",
+      "votes": 0,
+      "author": "icellusedkars",
+      "article_id": 9,
+      "created_at": 1600560600000,
+      "comment_id": 1
+      }
+    }
+  },
   "GET /api/articles": {
     "description": "serves an array of all articles",
     "queries": [],
