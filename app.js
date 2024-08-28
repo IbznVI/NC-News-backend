@@ -6,7 +6,7 @@ const { getTopics } = require("./controllers/topics-controllers");
 const { getEndpoints } = require("./controllers/endpoint-controllers")
 const { getArticleFromId, getArticles, patchVoteArticle} = require("./controllers/articles-controllers")
 const { endpointErrorHandler, serverErrorHandler, psqlErrorHandler } = require("./error-handlers")
-const { getArticleComments, postCommentOnArticle } = require("./controllers/comments-controllers")
+const { getArticleComments, postCommentOnArticle, deleteCommentFromId } = require("./controllers/comments-controllers")
 
 app.get("/api/topics", getTopics);
 app.get("/api", getEndpoints);
@@ -17,6 +17,8 @@ app.get("/api/articles/:article_id/comments", getArticleComments);
 app.post("/api/articles/:article_id/comments", postCommentOnArticle);
 
 app.patch("/api/articles/:article_id", patchVoteArticle);
+
+app.delete("/api/comments/:comment_id", deleteCommentFromId);
 
 app.all("*", endpointErrorHandler);
 

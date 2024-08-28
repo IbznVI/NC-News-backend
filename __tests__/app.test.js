@@ -243,7 +243,7 @@ describe("PATCH /api/articles/:article_id", ()=> {
             expect(msg).toBe("Bad Request")
         })
      });
-     test("400: returns the correct error message when invalid id is input", ()=> {
+     test("400: returns the correct error message when invalid data type is input", ()=> {
         return request(app)
         .patch("/api/articles/1")
         .send({ inc_votes: "Not-a-number"})
@@ -252,13 +252,29 @@ describe("PATCH /api/articles/:article_id", ()=> {
             expect(msg).toBe("Bad Request")
         })
      });
-     test("404: returns the correct error message when a non existing id is input", ()=> {
+     test("400: returns the correct error message when a non existing id is input", ()=> {
         return request(app)
         .patch("/api/articles/100")
         .send({ inc_votes: "Not-a-number"})
         .expect(400)
         .then(({ body: {msg} }) => {
             expect(msg).toBe("Bad Request")
+        })
+     });
+});
+
+describe("DELETE /api/comments/:comment_id", ()=> {
+    test("204: responds with 204", () => {
+        return request(app)
+        .delete("/api/comments/1")
+        .expect(204)
+    });
+    test("404: returns the correct error message when a non existing id is input", ()=> {
+        return request(app)
+        .delete("/api/comments/100000")
+        .expect(404)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Not found")
         })
      });
 });
