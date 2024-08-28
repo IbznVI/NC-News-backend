@@ -3,6 +3,7 @@ const db = require("../db/connection");
 const app = require("../app");
 const seed = require("../db/seeds/seed");
 const data = require("../db/data/test-data/index")
+const endpointsJSON = require("../endpoints.json");
 
 beforeEach(()=> {
     return seed(data);
@@ -47,8 +48,7 @@ describe("GET /api endpoints", ()=> {
         .get("/api")
         .expect(200)
         .then(({ body: { endpoints }}) => {
-            expect(endpoints).toHaveProperty("GET /api");
-            expect(endpoints).toHaveProperty("GET /api/topics");
+            expect(endpoints).toEqual(endpointsJSON)
         });
     });
 });
@@ -134,4 +134,50 @@ describe("GET /api/articles", ()=> {
             })
         });
     })
+});
+
+describe("GET /api/articles/:article_id/comments", ()=> {
+    test("200: responds with an array of comments for the given article_id containing the correct properties", () => {
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((response) => {
+            const { body: {comments}} = response
+            expect(Array.isArray(comments)).toBe(true)
+            expect(comments.length === 11).toBe(true)
+            comments.forEach((comment)=>{
+                expect(comment).toHaveProperty("comment_id", expect.any(Number));
+                expect(comment).toHaveProperty("votes", expect.any(Number));
+                expect(comment).toHaveProperty("created_at", expect.any(String));
+                expect(comment).toHaveProperty("author", expect.any(String));
+                expect(comment).toHaveProperty("body", expect.any(String));
+                expect(comment).toHaveProperty("article_id", expect.any(Number));
+            })
+        });
+    });
+    test("200: comments are served with the most recent comment first (Sorted by descending order)", ()=>{
+        return request(app)
+        .get("/api/articles/1/comments")
+        .expect(200)
+        .then((response)=>{
+            const { body: {comments}} = response 
+            expect(comments).toBeSortedBy("created_at", {descending: true})
+        })
+    })
+    test("404: returns the correct error message when a non existing id is input", ()=> {
+        return request(app)
+        .get("/api/articles/100/comments")
+        .expect(404)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Not found")
+        })
+     });
+     test("400: returns the correct error message when invalid id is input", ()=> {
+        return request(app)
+        .get("/api/articles/not-a-number/comments")
+        .expect(400)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Bad Request")
+        })
+     });
 });
