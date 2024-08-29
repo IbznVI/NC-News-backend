@@ -7,12 +7,14 @@ const { getEndpoints } = require("./controllers/endpoint-controllers")
 const { getArticleFromId, getArticles, patchVoteArticle} = require("./controllers/articles-controllers")
 const { endpointErrorHandler, serverErrorHandler, psqlErrorHandler } = require("./error-handlers")
 const { getArticleComments, postCommentOnArticle, deleteCommentFromId } = require("./controllers/comments-controllers")
+const { getUsers } = require("./controllers/users-controllers")
 
 app.get("/api/topics", getTopics);
 app.get("/api", getEndpoints);
 app.get("/api/articles/:article_id", getArticleFromId);
 app.get("/api/articles", getArticles);
 app.get("/api/articles/:article_id/comments", getArticleComments);
+app.get("/api/users", getUsers);
 
 app.post("/api/articles/:article_id/comments", postCommentOnArticle);
 
