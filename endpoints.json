@@ -80,6 +80,9 @@
       "name": "order",
       "preset": "desc",
       "acceptedQueries": ["asc", "desc"]
+    }, {
+      "description": "allows users to filter to get results of a certain topic",
+      "name": "topic"
     }
     ],
     "exampleResponse": {
