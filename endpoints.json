@@ -10,7 +10,7 @@
     }
   }, 
   "DELETE /api/comments/:comment_id": {
-    "description": "deletes a comment by its requested comment id"
+    "description": "deletes a comment by its requested comment idgit c"
   },
   "GET /api/articles/:article_id": {
     "description": "serves the article requested by the article id input by the user",
