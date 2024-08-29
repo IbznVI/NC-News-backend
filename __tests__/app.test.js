@@ -341,4 +341,27 @@ describe("GET /api/articles?sort_by:coloumn&order=:order", ()=> {
             expect(articles).toBeSortedBy("created_at", { descending: true })
         });
     })
+    test("200: responds with an array of article objects with the correct properties filtered by the topic as requested", () => {
+        return request(app)
+        .get("/api/articles?topic=mitch")
+        .expect(200)
+        .then((response) => {
+            const { body: { articles }} = response;
+            articles.forEach((article)=>{
+                expect(article.topic).toBe("mitch")
+            })
+        });
+    })
+    test("200: responds with an array of article objects with the correct properties filtered by the topic whilst sorted by and in order as requested", () => {
+        return request(app)
+        .get("/api/articles?topic=cats&sort_by=author&order=asc")
+        .expect(200)
+        .then((response) => {
+            const { body: { articles }} = response;
+            expect(articles).toBeSortedBy("author", { ascending: true })
+            articles.forEach((article)=>{
+                expect(article.topic).toBe("cats")
+            })
+        });
+    })
 })
