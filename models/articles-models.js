@@ -1,4 +1,5 @@
 const db = require("../db/connection.js")
+const format = require("pg-format")
 
 exports.articleFromId = (article_id) => {
     return db.query("SELECT * FROM articles WHERE article_id = $1", [article_id])
@@ -10,8 +11,9 @@ exports.articleFromId = (article_id) => {
         });
 };
 
-exports.allArticles = ()=>{
-    return db.query("SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.created_at DESC;").then(({rows})=>{
+exports.allArticles = (sort_by, order)=>{
+    const parametricQuery = format("SELECT articles.article_id, articles.title, articles.topic, articles.author, articles.created_at, articles.votes, articles.article_img_url, COUNT(comments.article_id) AS comment_count FROM articles LEFT JOIN comments ON articles.article_id = comments.article_id GROUP BY articles.article_id ORDER BY articles.%I %s;", sort_by, order)
+    return db.query(parametricQuery).then(({rows})=>{
         return rows;
     })
 }

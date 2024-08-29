@@ -70,7 +70,18 @@
   },
   "GET /api/articles": {
     "description": "serves an array of all articles",
-    "queries": [],
+    "queries": [ {
+      "description": "allows user to input a way to sort the articles requested",
+      "name": "sort_by",
+      "preset": "created_at",
+      "acceptedQueries": ["article_id", "author", "topic", "title", "body", "created_at", "votes"]
+    }, {
+      "description": "allows the user to order it asc or desc",
+      "name": "order",
+      "preset": "desc",
+      "acceptedQueries": ["asc", "desc"]
+    }
+    ],
     "exampleResponse": {
       "articles": [
         {

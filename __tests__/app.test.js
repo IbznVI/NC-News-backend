@@ -301,3 +301,44 @@ describe("GET /api/users", ()=> {
         });
     });
 });
+
+
+
+describe("GET /api/articles?sort_by:coloumn&order=:order", ()=> {
+    test("200: responds with an array of article objects with the correct properties sorted and ordered as requested", () => {
+        return request(app)
+        .get("/api/articles?sort_by=author")
+        .expect(200)
+        .then((response) => {
+            const { body: { articles }} = response;
+            expect(articles).toBeSortedBy("author", {descending: true})
+        });
+    })
+    test("200: responds with the articles ascending by date order", ()=>{
+        return request(app)
+        .get("/api/articles?order=asc")
+        .expect(200)
+        .then((response)=>{
+            const { body: { articles }} = response;
+            expect(articles).toBeSortedBy("created_at", { ascending: true })
+        });
+    });
+    test("200: responds with the articles ascending by date order", ()=>{
+        return request(app)
+        .get("/api/articles?sort_by=article_id&order=asc")
+        .expect(200)
+        .then((response)=>{
+            const { body: { articles }} = response;
+            expect(articles).toBeSortedBy("article_id", { ascending: true })
+        });
+    })
+    test("200: responds with the created_at in descending order as it was preset to this", ()=>{
+        return request(app)
+        .get("/api/articles")
+        .expect(200)
+        .then((response)=>{
+            const { body: { articles }} = response;
+            expect(articles).toBeSortedBy("created_at", { descending: true })
+        });
+    })
+})
