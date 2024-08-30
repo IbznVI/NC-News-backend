@@ -62,7 +62,7 @@ Now that its finally up and running, you can try out the following endpoints:
 - `POST /api/comments/:comment_id`: post a comment by article id
 - `DELETE /api/comments/:comment_id`: delete a comment by article id
 
-## Created by Ibrahim Ahmed - [LinkedIn]([https://www.linkedin.com/in/ibrahim-ahmed8/) 
+## Created by Ibrahim Ahmed - [LinkedIn](https://www.linkedin.com/in/ibrahim-ahmed8/) 
 
 ---
 
