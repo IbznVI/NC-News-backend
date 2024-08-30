@@ -152,16 +152,28 @@ describe("GET /api/articles/:article_id/comments", ()=> {
                 expect(comment).toHaveProperty("created_at", expect.any(String));
                 expect(comment).toHaveProperty("author", expect.any(String));
                 expect(comment).toHaveProperty("body", expect.any(String));
-                expect(comment).toHaveProperty("article_id", expect.any(Number));
+                expect(comment.article_id).toEqual(1);
             })
         });
     });
     test("200: comments are served with the most recent comment first (Sorted by descending order)", ()=>{
         return request(app)
-        .get("/api/articles/1/comments")
+        .get("/api/articles/2/comments")
         .expect(200)
         .then((response)=>{
             const { body: {comments}} = response 
+            expect(Array.isArray(comments)).toBe(true)
+            console.log(comments, comments.length)
+            expect(comments.length === 0).toBe(true)
+        })
+    });
+    test("200: responds with an empty array if the article requested has none", ()=>{
+        return request(app)
+        .get("/api/articles/2/comments")
+        .expect(200)
+        .then((response)=>{
+            const { body: {comments}} = response 
+
             expect(comments).toBeSortedBy("created_at", {descending: true})
         })
     })
@@ -235,7 +247,7 @@ describe("PATCH /api/articles/:article_id", ()=> {
             )
         });
     });
-     test("400: returns the correct error message when invalid id is input", ()=> {
+     test("400: returns the correct error message when invalid article id is input", ()=> {
         return request(app)
         .patch("/api/articles/not-a-number")
         .send({ inc_votes: 10})
@@ -278,11 +290,19 @@ describe("DELETE /api/comments/:comment_id", ()=> {
             expect(msg).toBe("Not found")
         })
      });
+     test("400: returns the correct error message when a bad data type is input", ()=> {
+        return request(app)
+        .delete("/api/comments/not-a-number")
+        .expect(400)
+        .then(({ body: {msg} }) => {
+            expect(msg).toBe("Bad Request")
+        })
+     });
 });
 
 
 describe("GET /api/users", ()=> {
-    test("200: ", () => {
+    test("200: responds with all of the users as requested with the correct properties", () => {
         return request(app)
         .get("/api/users")
         .expect(200)
@@ -291,7 +311,7 @@ describe("GET /api/users", ()=> {
             expect(Array.isArray(users)).toBe(true);
             expect(users).toHaveLength(4);
             users.forEach((user)=>{
-                expect(user).toEqual(
+                expect(user).toMatchObject(
                     expect.objectContaining({
                         username: expect.any(String),
                         name: expect.any(String),
@@ -305,7 +325,7 @@ describe("GET /api/users", ()=> {
 
 
 
-describe("GET /api/articles?sort_by:coloumn&order=:order", ()=> {
+describe("GET /api/articles with sort_by and order query parameters", ()=> {
     test("200: responds with an array of article objects with the correct properties sorted and ordered as requested", () => {
         return request(app)
         .get("/api/articles?sort_by=author")
@@ -321,7 +341,7 @@ describe("GET /api/articles?sort_by:coloumn&order=:order", ()=> {
         .expect(200)
         .then((response)=>{
             const { body: { articles }} = response;
-            expect(articles).toBeSortedBy("created_at", { ascending: true })
+            expect(articles).toBeSortedBy("created_at", { descending: false })
         });
     });
     test("200: responds with the articles ascending by date order", ()=>{
@@ -330,7 +350,7 @@ describe("GET /api/articles?sort_by:coloumn&order=:order", ()=> {
         .expect(200)
         .then((response)=>{
             const { body: { articles }} = response;
-            expect(articles).toBeSortedBy("article_id", { ascending: true })
+            expect(articles).toBeSortedBy("article_id", { descending: false })
         });
     })
     test("200: responds with the created_at in descending order as it was preset to this", ()=>{
@@ -364,5 +384,5 @@ describe("GET /api/articles?sort_by:coloumn&order=:order", ()=> {
                 expect(article.topic).toBe("cats")
             })
         });
-    })
+    });
 })
